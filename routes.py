@@ -1,16 +1,22 @@
 from math import ceil
 from flask import Flask, render_template
-from read_data import connect
+from read_data import connect, read_id
 from flask_paginate import Pagination, get_page_args
 
 app = Flask('Patients_EMI')
 
+def read_user(unique_id):
+    read_id(unique_id)
+    mydb = connect()
+    cursor = mydb.cursor()
+    cursor.execute(f"SELECT * FROM patients WHERE unique_id = '{unique_id}'")
+    result = cursor.fetchall()
+    return result
 
 mydb = connect()
 cursor = mydb.cursor()
 cursor.execute("SELECT unique_id, given_name, family_name, birth_date, social_security_number FROM patients")
 myresult = cursor.fetchall()
-
 
 
 def get_users(offset=0, per_page=10):
@@ -34,7 +40,8 @@ def index():
 
 @app.route("/patient/<id_user>")
 def usuarios(id_user):
-    return render_template("patient.html", id=id_user)
+    result = read_user(id_user)
+    return render_template("patient.html", id=result)
 
 
 if __name__ == "__main__":
