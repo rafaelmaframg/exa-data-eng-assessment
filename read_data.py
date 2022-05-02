@@ -14,14 +14,14 @@ def connect():
           password='',
           database='patients_db',
           )
-         
+          return mydb
      except:
           mydb = mysql.connector.connect(
           host='localhost',
           user='root',
           password='',
           )
-
+          return False
 def drop_db():
      try:
           mycursor = mydb.cursor()
@@ -79,12 +79,12 @@ def add_data():
 
 
 
-
-connect()
-drop_db()
-connect()
-create_table()
-add_data()
+if __name__ == '__main__':
+     if not connect():
+          drop_db()
+          connect()
+     create_table()
+     add_data()
 
 
 
