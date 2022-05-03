@@ -1,5 +1,16 @@
 div.container{
-   background-color: rgba(199, 241, 241, 0.723);
    font-size: 12px;
 }
 
+.headerpatient{
+   padding: 20px;
+}
+
+.search{
+      height: 40px;     
+}
+
+.homeicon{
+   padding: 10px;
+   
+}

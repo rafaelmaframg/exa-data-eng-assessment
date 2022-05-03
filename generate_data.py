@@ -47,12 +47,13 @@ def create_table(mydb):
           mycursor.execute("CREATE TABLE patients(unique_ID VARCHAR(100) NOT NULL PRIMARY KEY, given_name VARCHAR(20), family_name VARCHAR(50), birth_date DATE, us_core_race VARCHAR(30), us_core_ethnicity VARCHAR(50), mothers_maiden_name VARCHAR(100), us_core_birthsex CHAR, gender VARCHAR(20), birth_city VARCHAR(50), birth_state VARCHAR(50), birth_country CHAR(2), disability_adjusted_life_years FLOAT(15), quality_adjusted_life_years FLOAT(15), medical_record_number VARCHAR(50), social_security_number VARCHAR(50), driver_license VARCHAR(50), passport_number VARCHAR(50), phone_number VARCHAR(20), address_line VARCHAR(50), address_city VARCHAR(50), address_country VARCHAR(2), marital_status CHAR, multiple_birth VARCHAR(255), language VARCHAR(10) )")
           mydb.commit()
           mycursor = mydb.cursor()
-          mycursor.execute("CREATE TABLE patient_event (patient_event_id MEDIUMINT NOT NULL AUTO_INCREMENT, patient VARCHAR(100), "
-          "event_data LONGTEXT, type VARCHAR(255), PRIMARY KEY(patient_event_id), FOREIGN KEY (patient) REFERENCES "
+          mycursor.execute("CREATE TABLE patient_event (patient_event_id MEDIUMINT NOT NULL AUTO_INCREMENT, unique_ID VARCHAR(100), "
+          "event_data LONGTEXT, type VARCHAR(255), PRIMARY KEY(patient_event_id), FOREIGN KEY (unique_ID) REFERENCES "
           "patients(unique_ID))")
           print('Successful')
 
 def add_event(event, unique_id, cursor):
+     #TODO complete explain about the function
      """
      Function that receive the event and unique ID and insert to DB temporary
      :parameter: event
@@ -60,8 +61,29 @@ def add_event(event, unique_id, cursor):
      :parameter: cursor
      """
      resource_event = json.dumps(event["resource"]).replace('"', '""').replace("'", "''")
-     cursor.execute(f"""INSERT INTO `patients_db`.`patient_event`(`patient_event_id`,`patient`,`event_data`,  `type`)VALUES (NULL, '{unique_id}', '{resource_event}', '{event["resource"]["resourceType"]}')""")
+     cursor.execute(f"""INSERT INTO `patients_db`.`patient_event`(`patient_event_id`,`unique_ID`,`event_data`,  `type`)VALUES (NULL, '{unique_id}', '{resource_event}', '{event["resource"]["resourceType"]}')""")
 
+def read_number(unique_id):
+     #TODO documentation about the read sql 
+     mydb = connect()
+     cursor = mydb.cursor()
+     cursor.execute(f"SELECT count(unique_ID) FROM patient_event WHERE unique_ID = '{unique_id}' ")
+     result = cursor.fetchall()
+     return result[0]
+
+def read_user(unique_id, table):
+    #TODO Documentation about the function
+    mydb = connect()
+    cursor = mydb.cursor()
+    cursor.execute(f"SELECT * FROM {table} WHERE unique_ID = '{unique_id}'")
+    result = cursor.fetchall()
+    if result == []:
+        read_id(unique_id)
+        mydb = connect()
+        cursor = mydb.cursor()
+        cursor.execute(f"SELECT * FROM {table} WHERE unique_id = '{unique_id}'")
+        result = cursor.fetchall()
+    return result
 
 #function created to reduce program loading time by adding information according to what is being queried
 def read_id(unique_id):
