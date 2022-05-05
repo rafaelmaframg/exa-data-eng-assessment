@@ -1,6 +1,8 @@
+from ast import expr
 import os
 import json
 import mysql.connector
+import pandas as pd
 
 
 def connect():
@@ -10,9 +12,9 @@ def connect():
     """
     try:
         conn = mysql.connector.connect(
-        host="localhost",
+        host="mysql-container",
         user="root",
-        password="",
+        password="testflask",
         database="patients_db",
         )
         return conn
@@ -25,10 +27,11 @@ def create_db():
     """
     try:
         conn = mysql.connector.connect(
-        host="localhost",
+        host="mysql-container",
         user="root",
-        password="",
+        password="testflask",
         )
+        print('ok conectado')
         mycursor = conn.cursor()
         mycursor.execute("CREATE DATABASE patients_db")
         mycursor.close()
@@ -154,6 +157,14 @@ def add_data(mycursor, mydb):
             except:
                 continue
 
+def export_csv():
+    """
+    Function to generate a excel file with the patients data
+    :parameters: conn (Mysql Connector object) 
+    """
+    patient_df = pd.read_sql("select * from patients", connect())
+    patient_df.to_excel("./static/patients.xlsx", index=False)
+
 
 if __name__ == "__main__":
     if not connect():
@@ -167,7 +178,6 @@ if __name__ == "__main__":
     add_data(cursor, conn)
 
 
-#TODO export the data to csv file
 
 
 

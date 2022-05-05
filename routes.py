@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from generate_data import connect, read_event, read_user, read_number,create_db,create_table, add_data
+from generate_data import connect, read_event, read_user, read_number,create_db,create_table, add_data, export_csv
 from flask_paginate import Pagination, get_page_args
 import datetime
 
@@ -102,8 +102,9 @@ def usuarios(id_user):
     if counter == (0,):
         read_event(id_user)
         counter = read_number(id_user)
+    export_csv()
     return render_template("patient.html", user=result[0], counter=counter)
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=8000, host="0.0.0.0")

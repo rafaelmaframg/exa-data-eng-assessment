@@ -22,7 +22,8 @@
     <div class="btn-toolbar justify-content-between headerpatient" role="toolbar" aria-label="Toolbar with button groups">
       <div class="btn-group" role="group" aria-label="First group">
         {{ pagination.links }} 
-      </div>
+      </div><div><a href="{{ url_for('static', filename='patients.xlsx') }}">
+        <button type="button" class="btn btn-outline-secondary">Download</button></a></div>
       <div class="input-group">
         <!------------------------------   Home Icon    --------------------------------->
         <div class="homeicon">
