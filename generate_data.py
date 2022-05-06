@@ -11,14 +11,17 @@ def connect():
     :return: conn (mysql.connector Object) or False if unable to connect
     """
     try:
+        print('iniciando conex')
         conn = mysql.connector.connect(
-        host="mysql-container",
+        host="mysqldb",
         user="root",
-        password="testflask",
+        password="p@ssw0rd1",
         database="patients_db",
+        auth_plugin = "mysql_native_password"
         )
         return conn
     except:
+        print('Erooor')
         return False
 
 def create_db():
@@ -27,11 +30,11 @@ def create_db():
     """
     try:
         conn = mysql.connector.connect(
-        host="mysql-container",
+        host="mysqldb",
         user="root",
-        password="testflask",
+        password="p@ssw0rd1",
+        auth_plugin = "mysql_native_password"
         )
-        print('ok conectado')
         mycursor = conn.cursor()
         mycursor.execute("CREATE DATABASE patients_db")
         mycursor.close()
@@ -56,6 +59,7 @@ def create_table(conn):
         mycursor.execute("CREATE TABLE patient_event (patient_event_id MEDIUMINT NOT NULL AUTO_INCREMENT, unique_ID VARCHAR(100), "
         "event_data LONGTEXT, type VARCHAR(255), PRIMARY KEY(patient_event_id), FOREIGN KEY (unique_ID) REFERENCES "
         "patients(unique_ID))")
+        print('Done....')
     mycursor.close()
 
 def add_event(event, unique_id, cursor):

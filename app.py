@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from generate_data import connect, read_event, read_user, read_number,create_db,create_table, add_data, export_csv
 from flask_paginate import Pagination, get_page_args
 import datetime
+from time import sleep
 
 app = Flask('Patients_EMI')
 
@@ -9,8 +10,10 @@ app = Flask('Patients_EMI')
 #     Connection to get the user data to index    #
 ###################################################
 MYSQL_OFF = False
+sleep(10)
 try:
     mydb = connect()
+    print('Conected')
     cursor = mydb.cursor()
     cursor.execute("""SELECT unique_id, given_name, family_name,
              birth_date, social_security_number FROM patients""")
@@ -20,6 +23,7 @@ try:
 except:
     try:
         if not connect():
+            print('if not connect')
             create_db()
             conn = connect()
         else:
@@ -27,6 +31,12 @@ except:
         cursor = conn.cursor()
         create_table(conn)
         add_data(cursor, conn)
+        print('All Process')
+        cursor.execute("""SELECT unique_id, given_name, family_name,
+             birth_date, social_security_number FROM patients""")
+        myresult = cursor.fetchall()
+        cursor.close()
+        mydb.close()
 
     except:
         MYSQL_OFF = True
@@ -107,4 +117,4 @@ def usuarios(id_user):
 
 
 if __name__ == "__main__":
-    app.run(port=8000, host="0.0.0.0")
+    app.run(host="0.0.0.0")

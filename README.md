@@ -1,4 +1,9 @@
 #
+to execute:
+docker-compose -f docker-compose.dev.yml up --build
+
+acess: http://127.0.0.1:8000/
+
 Kanbanboard: https://trello.com/b/bVqXUxEH/data-test
 #
 # Data Engineer - Technical Assesment

@@ -1,15 +1,13 @@
 FROM python:3.9
 
-WORKDIR /code
+WORKDIR /app
 
-COPY requirements.txt .
+COPY requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt
 
 COPY . .
 
-ADD routes.py . 
+ADD app.py . 
 
-EXPOSE 8000
-
-CMD ["python", "./routes.py"]
+CMD [ "python",  "./app.py","--host=0.0.0.0"]
